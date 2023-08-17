@@ -1,17 +1,31 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1);
-        dp[0] = 0;
+        int[] arr = new int[amount + 1];
+        int shortestPath = amount + 1;
+        arr[0] = 0;
+
+        if (amount == 0)
+            return 0;
         
         for (int i = 1; i <= amount; i++) {
-            for (int coin : coins) {
-                if (coin <= i) {
-                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            arr[i] = amount + 1;
+            for (int c : coins) {
+                if (i >= c) {
+                    arr[i] = Math.min(arr[i], arr[i - c] + 1);
                 }
             }
         }
+
+        for (int c : coins) {
+            int lastPath = amount - c;
+            int path = 0;
+            if (lastPath >= 0) {
+                path = arr[lastPath] + 1;
+                shortestPath = Math.min(shortestPath, path);
+            }
+        }
         
-        return dp[amount] > amount ? -1 : dp[amount];
+        return shortestPath > amount ? -1 : shortestPath;
     }
 }
+
